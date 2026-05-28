@@ -282,6 +282,7 @@ async function startLiveMode() {
         wireAddForm(dateId, async name => {
             const { error } = await sb.from('signups').insert({ date_id: dateId, name });
             if (error) throw error;
+            await reload(sb, state);
         });
 
         document.getElementById(`list-${dateId}`)
