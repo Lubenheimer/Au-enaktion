@@ -290,6 +290,7 @@ async function startLiveMode() {
                 if (!btn) return;
                 btn.disabled = true;
                 await sb.from('signups').delete().eq('id', btn.dataset.id);
+                await reload(sb, state);
             });
     });
 }
