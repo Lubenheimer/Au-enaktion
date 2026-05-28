@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abbauaktion Zelt – KiTa Außengelände</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --green:      #2d6a4f;
+            --green-dk:   #1a4a37;
+            --green-lt:   #d8f0e4;
+            --bg:         #eef4f0;
+            --card:       #ffffff;
+            --text:       #111827;
+            --muted:      #6b7280;
+            --border:     #dde5e0;
+            --red:        #dc2626;
+            --red-lt:     #fee2e2;
+            --r:          14px;
+            --r-sm:       9px;
+            --shadow:     0 1px 3px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.07);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 32px 16px 72px;
+        }
+
+        .container { max-width: 460px; margin: 0 auto; }
+
+        /* ── Header ── */
+        header { text-align: center; margin-bottom: 40px; }
+        .icon { font-size: 3rem; display: block; margin-bottom: 10px; line-height: 1; }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+        }
+        .sub {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 7px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── Warning Banner ── */
+        .warn {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-radius: var(--r-sm);
+            padding: 14px 16px;
+            font-size: 0.88rem;
+            color: #92400e;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .warn code {
+            background: rgba(0,0,0,.06);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: .85em;
+        }
+
+        /* ── Date Cards ── */
+        .card {
+            background: var(--card);
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 18px 18px 16px;
+            margin-bottom: 12px;
+        }
+
+        .card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+
+        .day-info { display: flex; flex-direction: column; gap: 1px; }
+
+        .weekday {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--green);
+        }
+
+        .date { font-size: 1.05rem; font-weight: 700; }
+
+        .badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 11px;
+            border-radius: 20px;
+            background: var(--green-lt);
+            color: var(--green);
+            white-space: nowrap;
+            margin-top: 3px;
+            transition: background .2s, color .2s;
+        }
+        .badge.has-people { background: var(--green); color: #fff; }
+
+        /* ── People List ── */
+        .people { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; min-height: 0; }
+
+        .person {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--green-lt);
+            border-radius: var(--r-sm);
+            padding: 8px 8px 8px 14px;
+            animation: pop .15s ease;
+        }
+
+        @keyframes pop {
+            from { opacity: 0; transform: scale(.97); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .person-name { font-size: 0.93rem; font-weight: 500; }
+
+        .del-btn {
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); font-size: 1rem;
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; transition: background .15s, color .15s;
+            flex-shrink: 0; line-height: 1;
+        }
+        .del-btn:hover { background: var(--red-lt); color: var(--red); }
+        .del-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+        .empty {
+            color: var(--muted);
+            font-size: 0.83rem;
+            text-align: center;
+            padding: 8px 0;
+            font-style: italic;
+        }
+
+        /* ── Add Row ── */
+        .add-row { display: flex; gap: 7px; }
+
+        .name-input {
+            flex: 1;
+            padding: 9px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--r-sm);
+            font: inherit; font-size: 0.92rem;
+            outline: none;
+            background: #fafafa;
+            color: var(--text);
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .name-input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(45,106,79,.12);
+            background: #fff;
+        }
+        .name-input::placeholder { color: #b0bab6; }
+        .name-input:disabled { opacity: .5; }
+
+        .add-btn {
+            background: var(--green);
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: var(--r-sm);
+            font: inherit; font-size: 0.88rem; font-weight: 700;
+            cursor: pointer; white-space: nowrap;
+            transition: background .15s, transform .1s;
+            flex-shrink: 0;
+        }
+        .add-btn:hover { background: var(--green-dk); }
+        .add-btn:active { transform: scale(.97); }
+        .add-btn:disabled { background: #9abfb2; cursor: not-allowed; transform: none; }
+
+        /* ── Spinner ── */
+        .spinner-wrap { text-align: center; padding: 48px 0; }
+        .spinner {
+            width: 32px; height: 32px;
+            border: 3px solid var(--border); border-top-color: var(--green);
+            border-radius: 50%; animation: spin .7s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            margin-top: 44px;
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+        footer a { color: var(--muted); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <span class="icon">⛺</span>
+        <h1>Abbauaktion Zelt</h1>
+        <p class="sub">Trag dich für deinen Einsatztag auf dem Außengelände ein</p>
+    </header>
+
+    <div id="app">
+        <div class="spinner-wrap">
+            <div class="spinner"></div>
+            <p style="color:#6b7280;font-size:.9rem">Lade…</p>
+        </div>
+    </div>
+
+    <footer>KiTa Außengelände &middot; 2026</footer>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// ═══════════════════════════════════════════════════════════════
+//  ⚙️  SUPABASE KONFIGURATION  –  Platzhalter ersetzen!
+//  Werte findest du im Supabase-Dashboard unter:
+//  Project Settings → API
+// ═══════════════════════════════════════════════════════════════
+const SUPABASE_URL      = 'https://nlalvbhkkyutttnxjzaw.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_omBu4YXGK8P6lAbHy7cc7w_8Yoo1t5y';
+// ═══════════════════════════════════════════════════════════════
+
+const DATES = [
+    { id: '2026-05-30', weekday: 'Samstag',    date: '30. Mai 2026'  },
+    { id: '2026-06-01', weekday: 'Montag',     date: '1. Juni 2026'  },
+    { id: '2026-06-02', weekday: 'Dienstag',   date: '2. Juni 2026'  },
+    { id: '2026-06-03', weekday: 'Mittwoch',   date: '3. Juni 2026'  },
+    { id: '2026-06-04', weekday: 'Donnerstag', date: '4. Juni 2026'  },
+    { id: '2026-06-05', weekday: 'Freitag',    date: '5. Juni 2026'  },
+    { id: '2026-06-06', weekday: 'Samstag',    date: '6. Juni 2026'  },
+];
+
+const appDiv = document.getElementById('app');
+const IS_CONFIGURED = !SUPABASE_URL.includes('DEIN_PROJEKT');
+
+if (IS_CONFIGURED) {
+    startLiveMode();
+} else {
+    startDemoMode();
+}
+
+// ── Live Mode (Supabase) ──────────────────────────────────────
+
+async function startLiveMode() {
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    appDiv.innerHTML = '';
+    DATES.forEach(d => appDiv.appendChild(buildCard(d)));
+
+    // State: date_id → [{id (uuid), name}]
+    const state = Object.fromEntries(DATES.map(d => [d.id, []]));
+
+    // Alle Einträge laden und rendern
+    await reload(sb, state);
+
+    // Echtzeit-Abo: bei jeder Änderung neu laden
+    sb.channel('signups-watch')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'signups' }, () => reload(sb, state))
+        .subscribe();
+
+    // Formulare verdrahten
+    DATES.forEach(({ id: dateId }) => {
+        wireAddForm(dateId, async name => {
+            const { error } = await sb.from('signups').insert({ date_id: dateId, name });
+            if (error) throw error;
+        });
+
+        document.getElementById(`list-${dateId}`)
+            .addEventListener('click', async e => {
+                const btn = e.target.closest('.del-btn');
+                if (!btn) return;
+                btn.disabled = true;
+                await sb.from('signups').delete().eq('id', btn.dataset.id);
+            });
+    });
+}
+
+async function reload(sb, state) {
+    const { data, error } = await sb
+        .from('signups')
+        .select('id, date_id, name')
+        .order('name');
+    if (error) { console.error('Supabase:', error.message); return; }
+
+    DATES.forEach(d => state[d.id] = []);
+    data.forEach(row => state[row.date_id]?.push({ id: row.id, name: row.name }));
+    DATES.forEach(d => renderPeople(d.id, state[d.id]));
+}
+
+// ── Demo Mode (kein Supabase, lokaler Zustand) ────────────────
+
+function startDemoMode() {
+    appDiv.innerHTML = `<div class="warn">
+        ⚠️ <strong>Demo-Modus</strong> – Daten werden nicht gespeichert.<br>
+        Trag deine Supabase-Konfiguration in <code>index.html</code> ein (ca. Zeile&nbsp;130),
+        um die zentrale Speicherung zu aktivieren.
+        Anleitung: <code>README.md</code>
+    </div>`;
+
+    const state = Object.fromEntries(DATES.map(d => [d.id, []]));
+    let counter = 0;
+
+    DATES.forEach(dateInfo => {
+        appDiv.appendChild(buildCard(dateInfo));
+
+        wireAddForm(dateInfo.id, name => {
+            state[dateInfo.id].push({ id: String(++counter), name });
+            state[dateInfo.id].sort((a, b) => a.name.localeCompare(b.name, 'de'));
+            renderPeople(dateInfo.id, state[dateInfo.id]);
+        });
+
+        document.getElementById(`list-${dateInfo.id}`)
+            .addEventListener('click', e => {
+                const btn = e.target.closest('.del-btn');
+                if (!btn) return;
+                state[dateInfo.id] = state[dateInfo.id].filter(r => r.id !== btn.dataset.id);
+                renderPeople(dateInfo.id, state[dateInfo.id]);
+            });
+    });
+}
+
+// ── UI Helpers ────────────────────────────────────────────────
+
+function buildCard({ id, weekday, date }) {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = `
+        <div class="card-head">
+            <div class="day-info">
+                <span class="weekday">${weekday}</span>
+                <span class="date">${date}</span>
+            </div>
+            <span class="badge" id="badge-${id}">0 Personen</span>
+        </div>
+        <div class="people" id="list-${id}">
+            <div class="empty">Noch niemand eingetragen</div>
+        </div>
+        <div class="add-row">
+            <input
+                class="name-input" id="input-${id}"
+                type="text" placeholder="Dein Name…"
+                maxlength="60" autocomplete="off" spellcheck="false"
+            />
+            <button class="add-btn" id="btn-${id}">+ Eintragen</button>
+        </div>
+    `;
+    return el;
+}
+
+// people = [{id, name}, ...]
+function renderPeople(dateId, people) {
+    const list  = document.getElementById(`list-${dateId}`);
+    const badge = document.getElementById(`badge-${dateId}`);
+
+    const n = people.length;
+    badge.textContent = n === 1 ? '1 Person' : `${n} Personen`;
+    badge.classList.toggle('has-people', n > 0);
+
+    if (n === 0) {
+        list.innerHTML = '<div class="empty">Noch niemand eingetragen</div>';
+        return;
+    }
+
+    list.innerHTML = '';
+    people.forEach(({ id, name }) => {
+        const item = document.createElement('div');
+        item.className = 'person';
+        item.innerHTML = `
+            <span class="person-name">${esc(name)}</span>
+            <button class="del-btn" data-id="${esc(id)}" title="Austragen" aria-label="Austragen">✕</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function wireAddForm(dateId, onAdd) {
+    const input = document.getElementById(`input-${dateId}`);
+    const btn   = document.getElementById(`btn-${dateId}`);
+
+    async function handleAdd() {
+        const name = input.value.trim();
+        if (!name) { input.focus(); return; }
+        btn.disabled   = true;
+        input.disabled = true;
+        try {
+            await onAdd(name);
+            input.value = '';
+        } finally {
+            btn.disabled   = false;
+            input.disabled = false;
+            input.focus();
+        }
+    }
+
+    btn.addEventListener('click', handleAdd);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') handleAdd(); });
+}
+
+function esc(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+</script>
+</body>
+</html>
