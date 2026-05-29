@@ -51,6 +51,46 @@
             margin-right: auto;
         }
 
+        /* ── Deadline Banner ── */
+        .deadline-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: #fff7ed;
+            border: 1.5px solid #f97316;
+            border-radius: var(--r);
+            padding: 16px 18px;
+            margin-bottom: 24px;
+        }
+
+        .deadline-icon {
+            font-size: 1.6rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .deadline-banner strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #c2410c;
+            margin-bottom: 4px;
+        }
+
+        .deadline-banner p {
+            font-size: 0.87rem;
+            color: #7c3107;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .deadline-banner p strong {
+            display: inline;
+            font-size: inherit;
+            color: #c2410c;
+        }
+
         /* ── Warning Banner ── */
         .warn {
             background: #fffbeb;
@@ -216,6 +256,14 @@
         <h1>Abbauaktion Zelt</h1>
         <p class="sub">Trag dich für deinen Einsatztag auf dem Außengelände ein</p>
     </header>
+
+    <div class="deadline-banner">
+        <span class="deadline-icon">🚧</span>
+        <div>
+            <strong>Frist: 8. Juni 2026</strong>
+            <p>Aufgrund der bevorstehenden Baumaßnahmen müssen alle Arbeiten bis spätestens <strong>Montag, 8. Juni 2026</strong> abgeschlossen sein.</p>
+        </div>
+    </div>
 
     <div id="app">
         <div class="spinner-wrap">
